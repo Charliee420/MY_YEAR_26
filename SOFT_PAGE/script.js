@@ -129,13 +129,21 @@ function renderHabits() {
 }
 
 function toggleCheck(e) {
-    const cell = e.target;
+    // Robustly get the cell (handles clicks on text/pseudo elements)
+    const cell = e.target.closest('.day-cell');
+    if (!cell) return;
+
     const day = parseInt(cell.dataset.day);
     const today = new Date().getDate();
 
     // Strict Mode: Only allow editing "today"
     if (day !== today) {
-        alert("Nice try diddy but you can't change your past and future But you can change your today, It will surely changes your tommarow ");
+        const modal = document.getElementById('warning-modal');
+        if (modal) {
+            modal.classList.remove('hidden');
+        } else {
+            alert("Nice try diddy! (Modal missing, but: You can only edit today!)");
+        }
         return;
     }
 
@@ -144,6 +152,11 @@ function toggleCheck(e) {
 
     // Save state
     saveData();
+}
+
+function closeModal() {
+    const modal = document.getElementById('warning-modal');
+    modal.classList.add('hidden');
 }
 
 function saveData() {
